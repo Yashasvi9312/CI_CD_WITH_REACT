@@ -42,6 +42,14 @@ pipeline{
                 archiveArtifacts artifacts: 'dist/**',fingerprint: true
             }
         }
+
+        stage('Example Script'){
+            steps{
+                script{
+                    def name = 'React App'
+                }
+            }
+        }
     }
 
     post{
