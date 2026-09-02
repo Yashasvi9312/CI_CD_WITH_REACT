@@ -38,7 +38,7 @@ pipeline{
         }
 
         stage('Archive Artifacts'){
-            step{
+            steps{
                 archiveArtifacts artifacts: 'dist/**',fingerprint: true
             }
         }
