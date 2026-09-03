@@ -48,6 +48,14 @@ pipeline{
     post{
         success{
             echo 'React CI pipeline completed successfully!'
+
+            build job : 'jenkins-react-cd',
+            parameters:[
+                string(
+                    name:'BUILD_NUMBER_TO_DEPLOY',
+                    value:env.BUILD_NUMBER
+                )
+            ]
         }
         failure{
             echo 'React CI pipeline failed!'
