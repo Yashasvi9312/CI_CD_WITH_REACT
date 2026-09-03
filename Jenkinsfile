@@ -46,6 +46,21 @@ pipeline{
             }
         }
 
+        stage('Test Username Password') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'demo-user-pass',
+                        usernameVariable: 'DEMO_USER',
+                        passwordVariable: 'DEMO_PASSWORD'
+                    )
+                ]) {
+                    bat 'echo Username is %DEMO_USER%'
+                    bat 'echo Password is %DEMO_PASSWORD%'
+                }
+            }
+        }
+
         stage('Archive Artifacts'){
             steps{
                 archiveArtifacts artifacts: 'dist/**',fingerprint: true
