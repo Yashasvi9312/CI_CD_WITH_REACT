@@ -5,6 +5,9 @@ pipeline{
         nodejs 'node24'
     }
 
+    environment{
+        SECRET_TEXT = credentials('test-secret')
+    }
 
     stages{
         stage('Checkout') {
@@ -34,6 +37,12 @@ pipeline{
         stage('Build') {
             steps {
                 bat 'npm run build'
+            }
+        }
+
+        stage('Test Credentials') {
+            steps {
+                echo "Secret is available to Jenkins"
             }
         }
 
