@@ -43,12 +43,6 @@ pipeline{
             }
         }
 
-        stage('Deploy') {
-            steps {
-                bat 'if not exist C:\\jenkins-deployed-app mkdir C:\\jenkins-deployed-app'
-                bat 'xcopy /E /I /Y dist C:\\jenkins-deployed-app'
-            }
-        }
     }
 
     post{
