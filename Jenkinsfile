@@ -104,9 +104,15 @@ pipeline {
             }
         }
 
-        stage('Run Container') {
+        stage('Remove Old Container') {
             steps {
-                bat 'docker run -d -p 3000:80 jenkins-react-app:1.0'
+                bat 'docker rm -f jenkins-react-container || exit 0'
+            }
+        }
+
+        stage('Run New Container') {
+            steps {
+                bat 'docker run -d --name jenkins-react-container -p 3000:80 jenkins-react-app:1.0'
             }
         }
     }
