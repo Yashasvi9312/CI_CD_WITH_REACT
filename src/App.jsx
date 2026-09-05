@@ -19,6 +19,7 @@ function App() {
           <h1>Get started</h1>
           <p>
            started Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+           <p>lets test docker container update</p>
           </p>
         </div>
         <button
