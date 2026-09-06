@@ -100,7 +100,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t jenkins-react-app:1.0 .'
+                bat "docker build -t jenkins-react-app:%BUILD_NUMBER% ."
             }
         }
 
@@ -112,7 +112,25 @@ pipeline {
 
         stage('Run New Container') {
             steps {
-                bat 'docker run -d --name jenkins-react-container -p 3000:80 jenkins-react-app:1.0'
+                bat 'docker run -d --name jenkins-react-container -p 3000:80 jenkins-react-app:%BUILD_NUMBER%'
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    bat '''
+                        docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%
+                        docker tag jenkins-react-app:%BUILD_NUMBER% %DOCKER_USERNAME%/jenkins-react-app:%BUILD_NUMBER%
+                        docker push %DOCKER_USERNAME%/jenkins-react-app:%BUILD_NUMBER%
+                    '''
+                }
             }
         }
     }
