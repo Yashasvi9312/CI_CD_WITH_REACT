@@ -87,48 +87,64 @@
 //     }
 // }
 
+// pipeline {
+//     agent any
+
+//     stages {
+
+//         stage('Checkout') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
+
+//         stage('Build Docker Image') {
+//             steps {
+//                 bat "docker build -t jenkins-react-app:%BUILD_NUMBER% ."
+//             }
+//         }
+
+//         stage('Push to Docker Hub') {
+//             steps {
+//                 withCredentials([
+//                     usernamePassword(
+//                         credentialsId: 'docker-hub-cred',
+//                         usernameVariable: 'DOCKER_USERNAME',
+//                         passwordVariable: 'DOCKER_PASSWORD'
+//                     )
+//                 ]) {
+//                     bat '''
+//                         docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%
+//                         docker tag jenkins-react-app:%BUILD_NUMBER% %DOCKER_USERNAME%/jenkins-react-app:%BUILD_NUMBER%
+//                         docker push %DOCKER_USERNAME%/jenkins-react-app:%BUILD_NUMBER%
+//                     '''
+//                 }
+//             }
+//         }
+
+//         stage('Remove Old Container') {
+//             steps {
+//                 bat 'docker rm -f jenkins-react-container || exit 0'
+//             }
+//         }
+
+//         stage('Run New Container') {
+//             steps {
+//                 bat 'docker run -d --name jenkins-react-container -p 3000:80 jenkins-react-app:%BUILD_NUMBER%'
+//             }
+//         }
+//     }
+// }
+
 pipeline {
     agent any
 
     stages {
-
-        stage('Checkout') {
+        stage('Test Oracle SSH') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                bat "docker build -t jenkins-react-app:%BUILD_NUMBER% ."
-            }
-        }
-
-        stage('Remove Old Container') {
-            steps {
-                bat 'docker rm -f jenkins-react-container || exit 0'
-            }
-        }
-
-        stage('Run New Container') {
-            steps {
-                bat 'docker run -d --name jenkins-react-container -p 3000:80 jenkins-react-app:%BUILD_NUMBER%'
-            }
-        }
-
-        stage('Push to Docker Hub') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'docker-hub-cred',
-                        usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSWORD'
-                    )
-                ]) {
+                sshagent(credentials: ['oracle-vm-ssh']) {
                     bat '''
-                        docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%
-                        docker tag jenkins-react-app:%BUILD_NUMBER% %DOCKER_USERNAME%/jenkins-react-app:%BUILD_NUMBER%
-                        docker push %DOCKER_USERNAME%/jenkins-react-app:%BUILD_NUMBER%
+                        ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "docker --version"
                     '''
                 }
             }
