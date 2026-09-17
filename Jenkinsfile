@@ -58,6 +58,8 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "sudo docker run -d --name jenkins-react-container -p 8080:80 yashasvi2000/jenkins-react-app:%GIT_COMMIT_SHORT%"
 
                             ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "sudo docker ps --filter name=jenkins-react-container"
+
+                            ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "curl -f http://localhost:8080"
                         '''
                     }
                 }
