@@ -128,13 +128,13 @@ pipeline {
             }
         }
     }
-}
 
-post{
+    post{
     success{
         script{
             def text = getLastKnownGood()
             echo "${text}"
         }
     }
+}
 }
