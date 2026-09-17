@@ -20,7 +20,7 @@ function App() {
           <p>
            started Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
            <p>lets test docker container update</p>
-           <p>if it builds then oracle deployment is successful and restarted</p>
+           <p>if it builds then oracle deployment is successful and restartedd</p>
           </p>
         </div>
         <button
