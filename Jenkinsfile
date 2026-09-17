@@ -1,4 +1,18 @@
+def saveLastKnownGood(String imageTag) {
+    bat """
+        if not exist C:\\jenkins-lkg mkdir C:\\jenkins-lkg
+        echo ${imageTag} > C:\\jenkins-lkg\\last-known-good.txt
+    """
+}
 
+def getLastKnownGood() {
+    def output = bat(
+        script: '@type C:\\jenkins-lkg\\last-known-good.txt',
+        returnStdout: true
+    ).trim()
+
+    return output
+}
 def deployToOracle(String imageTag) {
     sshagent(credentials: ['oracle-vm-ssh']) {
         bat """
@@ -95,6 +109,7 @@ pipeline {
             steps {
                 script {
                     deployToOracle(env.GIT_COMMIT_SHORT)
+                    saveLastKnownGood(env.GIT_COMMIT_SHORT)
                 }
             }
         }
@@ -111,6 +126,15 @@ pipeline {
                     deployToOracle(params.ROLLBACK_SHA)
                 }
             }
+        }
+    }
+}
+
+post{
+    success{
+        script{
+            def text = getLastKnownGood()
+            echo "${text}"
         }
     }
 }
