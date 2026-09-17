@@ -100,19 +100,45 @@ pipeline {
         }
 
         stage('Deploy to Oracle') {
-            when {
-                expression {
-                    return !params.ROLLBACK_SHA?.trim()
+                when {
+                    expression {
+                        return !params.ROLLBACK_SHA?.trim()
+                    }
                 }
-            }
 
-            steps {
-                script {
-                    deployToOracle(env.GIT_COMMIT_SHORT)
-                    saveLastKnownGood(env.GIT_COMMIT_SHORT)
+                steps {
+                    script {
+
+                        try {
+                            deployToOracle(env.GIT_COMMIT_SHORT)
+
+                            saveLastKnownGood(env.GIT_COMMIT_SHORT)
+
+                            echo "Deployment successful."
+                            echo "Last Known Good: ${env.GIT_COMMIT_SHORT}"
+
+                        } catch (Exception e) {
+
+                            echo "Deployment failed!"
+                            echo "Starting automatic rollback..."
+
+                            def lastKnownGood = getLastKnownGood()
+
+                            if (!lastKnownGood) {
+                                error "No Last Known Good version available for rollback."
+                            }
+
+                            echo "Rolling back to: ${lastKnownGood}"
+
+                            deployToOracle(lastKnownGood)
+
+                            echo "Rollback successful: ${lastKnownGood}"
+
+                            throw e
+                        }
+                    }
                 }
             }
-        }
 
         stage('Rollback') {
             when {
