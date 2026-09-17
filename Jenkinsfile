@@ -9,6 +9,12 @@ pipeline {
             }
         }
 
+         stage('Get Git Commit ID') {
+            steps {
+                bat 'git rev-parse --short HEAD'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 bat "docker build -t jenkins-react-app:%BUILD_NUMBER% ."
