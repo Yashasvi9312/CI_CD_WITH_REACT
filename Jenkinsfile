@@ -66,15 +66,15 @@ pipeline {
                 steps {
                     sshagent(credentials: ['oracle-vm-ssh']) {
                         bat '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@YOUR_ORACLE_PUBLIC_IP "sudo docker pull yashasvi2000/jenkins-react-app:%ROLLBACK_SHA%"
+                            ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "sudo docker pull yashasvi2000/jenkins-react-app:%ROLLBACK_SHA%"
 
-                            ssh -o StrictHostKeyChecking=no ubuntu@YOUR_ORACLE_PUBLIC_IP "sudo docker rm -f jenkins-react-container || true"
+                            ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "sudo docker rm -f jenkins-react-container || true"
 
-                            ssh -o StrictHostKeyChecking=no ubuntu@YOUR_ORACLE_PUBLIC_IP "sudo docker run -d --name jenkins-react-container -p 8080:80 yashasvi2000/jenkins-react-app:%ROLLBACK_SHA%"
+                            ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "sudo docker run -d --name jenkins-react-container -p 8080:80 yashasvi2000/jenkins-react-app:%ROLLBACK_SHA%"
 
-                            ssh -o StrictHostKeyChecking=no ubuntu@YOUR_ORACLE_PUBLIC_IP "curl -f -s http://localhost:8080 > /dev/null"
+                            ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "curl -f -s http://localhost:8080 > /dev/null"
 
-                            ssh -o StrictHostKeyChecking=no ubuntu@YOUR_ORACLE_PUBLIC_IP "sudo docker ps --filter name=jenkins-react-container"
+                            ssh -o StrictHostKeyChecking=no ubuntu@129.154.45.228 "sudo docker ps --filter name=jenkins-react-container"
                         '''
                     }
                 }
